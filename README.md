@@ -58,6 +58,8 @@ User=smbpasswdweb
 Group=smbpasswdweb
 Restart=always
 Environment=SMBPASSWD_SMB_HOST=hostname.domain.com
+Environment=MOJO_MODE=production
+Environment=MOJO_LOG_LEVEL=error
 ExecStart=/opt/smb_passwd_web/bin/smb_passwd_web.pl prefork --listen http://127.0.0.1:6879
 ExecStop=/usr/bin/pkill -f 'smb_passwd_web.+6879
 Restart=always
