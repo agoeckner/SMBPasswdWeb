@@ -73,7 +73,9 @@ any '/' => sub {
 
     $validation->required('user')->size(1, 20);
     $validation->required('pass')->size(1,80);
-    $validation->required('newpass')->passwordQuality();
+    if (!$ENV{SMBPASSWD_NO_QUALITY_CHECK}){
+        $validation->required('newpass')->passwordQuality();
+    }
     $validation->required('newpass_again')->equal_to('newpass');
 
     return $c->render if $validation->has_error;
