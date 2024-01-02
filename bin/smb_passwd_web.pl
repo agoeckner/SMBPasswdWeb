@@ -19,6 +19,19 @@ die "SMBPASSWD_SMB_HOST environment variable is not defined\n"
 # Make signed cookies secure
 app->secrets(['dontneedsecurecookies in this app']);
 
+# Fix URLs in reverse proxy mode.
+if ( my $path = $ENV{MOJO_REVERSE_PROXY} ) {
+    my @path_parts = grep /\S/, split m{/}, $path;
+    app->hook( before_dispatch => sub {
+        my ( $c ) = @_;
+        my $url = $c->req->url;
+        my $base = $url->base;
+        push @{ $base->path }, @path_parts;
+        $base->path->trailing_slash(1);
+        $url->path->leading_slash(0);
+    });
+}
+
 my $errors = {
     size => sub {
         my ($value,$min,$max) = @_;
